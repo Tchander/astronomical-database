@@ -13,7 +13,7 @@ export default new Router({
         },
         {
             path: '/all-objects',
-            component: () => import('./components/AllObjects')
+            component: () => import('./views/AllObjects')
         }
     ]
 })
