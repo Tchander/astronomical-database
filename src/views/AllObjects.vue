@@ -1,14 +1,19 @@
 <template>
   <div>
-    <h2>All objects are here</h2>
-    <router-link to="/">Home</router-link>
+    <router-link class="back-to-home" to="/">Home</router-link>
+    <div class="selectors">
+      <filter-by-type class="select" v-on:filter-by-type="filterByType"/>
+      <filter-by-characteristic class="select" v-on:filter-by-characteristics="filterByCharacteristics"/>
+    </div>
     <hr>
-    <ObjectList v-bind:objects="allObjects"/>
+    <object-list v-bind:objects="filteredObjectsByType"/>
   </div>
 </template>
 
 <script>
 import ObjectList from '@/components/ObjectList'
+import FilterByType from "@/components/FilterByType"
+import FilterByCharacteristic from "@/components/FilterByCharacteristic"
 export default {
   data() {
     return {
@@ -95,11 +100,67 @@ export default {
           semiMajorAxisKm: 5882936265.2775, orbitalPeriodDays: 90072.7, eccentricity: 0.26257, inclination: 14.040,
           argumentOfPerihelion: 287.87, longitudeOfAscendingNode: 23.152, meanAnomaly: 73.453, albedo: 0.052
         }
-      ]
+      ],
+      filteredObjectsByType: [],
+      filteredObjectsByCharacteristic: []
     }
   },
   components: {
+    FilterByCharacteristic,
+    FilterByType,
     ObjectList
+  },
+  methods: {
+    filterByType(filter) {
+      if (filter === 'all') {
+        this.filteredObjectsByType = this.allObjects
+      } else if (filter === 'stars') {
+        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Star')
+      } else if (filter === 'planets') {
+        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Planet')
+      } else if (filter === 'dwarf-planets') {
+        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Dwarf planet')
+      } else if (filter === 'satellites') {
+        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Satellite')
+      } else if (filter === 'asteroids') {
+        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Asteroid')
+      }
+    },
+    filterByCharacteristics(filter) {
+      // Some problem here with sort density and mass because some bodies has unknown status of this characteristics
+      if (filter === 'radius') {
+        this.filteredObjectsByCharacteristic =
+            this.filteredObjectsByType.sort((prev, next) => next.radiusKm - prev.radiusKm)
+      } else if (filter === 'mass') {
+        this.filteredObjectsByCharacteristic =
+            this.filteredObjectsByType.sort((prev, next) => next.massKg - prev.massKg)
+      } else if (filter === 'density') {
+        this.filteredObjectsByCharacteristic =
+            this.filteredObjectsByType.sort((prev, next) => next.densityGCm3 - prev.densityGCm3)
+      } else if (filter === 'temperature') {
+        this.filteredObjectsByCharacteristic =
+            this.filteredObjectsByType.sort((prev, next) => next.temperatureK - prev.temperatureK)
+      }
+    }
+  },
+  created() {
+    this.filteredObjectsByType = this.allObjects
   }
 }
 </script>
+
+<style>
+.back-to-home {
+  position: fixed;
+  top: 50px;
+  right: 50px;
+}
+.select {
+  width: 10%;
+  background: none;
+  color: red;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+</style>
