@@ -1,18 +1,19 @@
 <template>
   <div class="container">
-      <header-item class="grid-container" />
-      <object-item
-          class="grid-container"
-          v-for="(object, i) of objects" :key="object.id"
-          v-bind:object="object"
-          v-bind:index="i"
-      />
+    <header-item class="grid-container"/>
+    <object-item
+        class="grid-container"
+        v-for="(object, i) of objects" :key="object.id"
+        v-bind:object="object"
+        v-bind:index="i"
+    />
   </div>
 </template>
 
 <script>
 import ObjectItem from '@/components/ObjectItem'
 import HeaderItem from '@/components/HeaderItem'
+
 export default {
   props: ['objects'],
   components: {

@@ -1,14 +1,18 @@
 <template>
   <div>
-    <div class="grid-item-header">№</div>
-    <div class="grid-item-header">Name</div>
-    <div class="grid-item-header">Type</div>
-    <div class="grid-item-header">Mass(kg)</div>
-    <div class="grid-item-header">Radius(km)</div>
-    <div class="grid-item-header">Density(g/cm^3)</div>
-    <div class="grid-item-header">Temperature(K)</div>
+    <div v-for="text in header" class="grid-item-header">{{ text }}</div>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      header: ['№', 'Name', 'Type', 'Mass(kg)', 'Radius(km)', 'Density(g/cm^3)', 'Temperature(K)']
+    }
+  }
+}
+</script>
 
 <style>
 .grid-item-header{

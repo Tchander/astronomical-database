@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <h1>Astronomical Database</h1>
-    <hr>
 
     <router-view />
   </div>
@@ -42,5 +41,22 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
   color: #fff;
   margin-top: 60px;
+}
+.ao-select-wrapper {
+  position: relative;
+  display: inline;
+}
+.ao-select-wrapper:before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  right: 30px;
+  top: 5px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+
+  border-top: 5px solid red;
 }
 </style>

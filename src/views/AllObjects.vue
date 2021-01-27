@@ -2,10 +2,9 @@
   <div>
     <router-link class="back-to-home" to="/">Home</router-link>
     <div class="selectors">
-      <filter-by-type class="select" v-on:filter-by-type="filterByType"/>
-      <filter-by-characteristic class="select" v-on:filter-by-characteristics="filterByCharacteristics"/>
+      <filter-by-type v-on:filter-by-type="filterByType"/>
+      <filter-by-characteristic v-on:filter-by-characteristics="filterByCharacteristics"/>
     </div>
-    <hr>
     <object-list v-bind:objects="filteredObjectsByType"/>
   </div>
 </template>
@@ -112,35 +111,51 @@ export default {
   },
   methods: {
     filterByType(filter) {
-      if (filter === 'all') {
-        this.filteredObjectsByType = this.allObjects
-      } else if (filter === 'stars') {
-        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Star')
-      } else if (filter === 'planets') {
-        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Planet')
-      } else if (filter === 'dwarf-planets') {
-        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Dwarf planet')
-      } else if (filter === 'satellites') {
-        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Satellite')
-      } else if (filter === 'asteroids') {
-        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === 'Asteroid')
+      const mapper = {
+        'stars': 'Star',
+        'planets': 'Planet',
+        'dwarf-planets': 'Dwarf planet',
+        'satellites': 'Satellite',
+        'asteroids': 'Asteroid'
       }
+      if (Object.keys(mapper).includes(filter)) {
+        this.filteredObjectsByType = this.allObjects.filter(t => t.objectType === mapper[filter])
+        return
+      }
+      this.filteredObjectsByType = this.allObjects
     },
     filterByCharacteristics(filter) {
-      // Some problem here with sort density and mass because some bodies has unknown status of this characteristics
-      if (filter === 'radius') {
-        this.filteredObjectsByCharacteristic =
-            this.filteredObjectsByType.sort((prev, next) => next.radiusKm - prev.radiusKm)
-      } else if (filter === 'mass') {
-        this.filteredObjectsByCharacteristic =
-            this.filteredObjectsByType.sort((prev, next) => next.massKg - prev.massKg)
-      } else if (filter === 'density') {
-        this.filteredObjectsByCharacteristic =
-            this.filteredObjectsByType.sort((prev, next) => next.densityGCm3 - prev.densityGCm3)
-      } else if (filter === 'temperature') {
-        this.filteredObjectsByCharacteristic =
-            this.filteredObjectsByType.sort((prev, next) => next.temperatureK - prev.temperatureK)
+      const mapper = {
+        'radius': 'radiusKm',
+        'mass': 'massKg',
+        'density': 'densityGCm3',
+        'temperature': 'temperatureK'
       }
+      if (Object.keys(mapper).includes(filter)) {
+        this.filteredObjectsByCharacteristic =
+            this.filteredObjectsByType.sort((prev, next) => {
+              let result
+              if (typeof next[mapper[filter]] === 'string') {
+                next[mapper[filter]] = Number.NEGATIVE_INFINITY
+              }
+              if (typeof prev[mapper[filter]] === 'string') {
+                prev[mapper[filter]] = Number.NEGATIVE_INFINITY
+              }
+              result = next[mapper[filter]] - prev[mapper[filter]]
+              if (next[mapper[filter]] === Number.NEGATIVE_INFINITY) {
+                next[mapper[filter]] = 'unknown'
+              }
+              if (prev[mapper[filter]] === Number.NEGATIVE_INFINITY) {
+                prev[mapper[filter]] = 'unknown'
+              }
+              return result
+            })
+      }
+
+    },
+    sortBy (value, prev, next) {
+      console.log(value)
+      return next[value] - prev[value]
     }
   },
   created() {
@@ -155,9 +170,13 @@ export default {
   top: 50px;
   right: 50px;
 }
+.selectors {
+  margin: 50px auto;
+}
 .select {
   width: 10%;
   background: none;
+  margin: 0 20px;
   color: red;
   padding: 10px;
   border: 1px solid #ccc;

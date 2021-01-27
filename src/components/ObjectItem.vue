@@ -1,12 +1,7 @@
 <template>
   <div v-bind="$attrs">
     <div class="grid-item">{{ index + 1 }}</div>
-    <div class="grid-item">{{ object.name }}</div>
-    <div class="grid-item">{{ object.objectType }}</div>
-    <div class="grid-item">{{ object.massKg }}</div>
-    <div class="grid-item">{{ object.radiusKm }}</div>
-    <div class="grid-item">{{ object.densityGCm3 }}</div>
-    <div class="grid-item">{{ object.temperatureK }}</div>
+    <div v-for="key in keys" class="grid-item">{{ object[key] }}</div>
   </div>
 </template>
 
@@ -19,6 +14,11 @@ export default {
       default: () => ({})
     },
     index: Number
+  },
+  data() {
+    return {
+      keys: ['name', 'objectType', 'massKg', 'radiusKm', 'densityGCm3', 'temperatureK']
+    }
   }
 }
 </script>
